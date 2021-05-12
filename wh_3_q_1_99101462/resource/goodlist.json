@@ -1,0 +1,71 @@
+{
+  "availibaleGoodsList": [
+    {
+      "name": "egg",
+      "cod": 1956504535874434402,
+      "amount": 12.0,
+      "buy": 12.0,
+      "sell": 10.0,
+      "kindOfAmount": "killogram",
+      "numberOfOrders": 0,
+      "amountOfOrders": 0.0,
+      "profitOfOrders": 0.0,
+      "sellOfOrders": 0.0
+    },
+    {
+      "name": "balls",
+      "cod": 9031106665017845719,
+      "amount": 12.0,
+      "buy": 12.0,
+      "sell": 10.0,
+      "kindOfAmount": "killogram",
+      "numberOfOrders": 0,
+      "amountOfOrders": 0.0,
+      "profitOfOrders": 0.0,
+      "sellOfOrders": 0.0
+    },
+    {
+      "name": "melon",
+      "cod": 8887828352415976608,
+      "amount": 12.0,
+      "buy": 12.0,
+      "sell": 10.0,
+      "kindOfAmount": "killogram",
+      "numberOfOrders": 0,
+      "amountOfOrders": 0.0,
+      "profitOfOrders": 0.0,
+      "sellOfOrders": 0.0
+    },
+    {
+      "name": "rice",
+      "cod": 2209080412756511364,
+      "amount": 12.0,
+      "buy": 12.0,
+      "sell": 10.0,
+      "kindOfAmount": "killogram",
+      "numberOfOrders": 0,
+      "amountOfOrders": 0.0,
+      "profitOfOrders": 0.0,
+      "sellOfOrders": 0.0
+    },
+    {
+      "name": "chiken",
+      "cod": 1888183918545050491,
+      "amount": 12.0,
+      "buy": 12.0,
+      "sell": 10.0,
+      "kindOfAmount": "killogram",
+      "numberOfOrders": 0,
+      "amountOfOrders": 0.0,
+      "profitOfOrders": 0.0,
+      "sellOfOrders": 0.0
+    }
+  ],
+  "nonAvailibaleGoodsList": [],
+  "billsList": [],
+  "historyOrder": {},
+  "tabel": {
+    "goods": []
+  },
+  "customers": []
+}

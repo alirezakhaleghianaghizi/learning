@@ -1,0 +1,70 @@
+{
+  "availibaleGoodsList": [
+    {
+      "name": "name",
+      "cod": 7577426209803362726,
+      "amount": 11.3,
+      "buy": 3.0,
+      "sell": 112.0,
+      "kindOfAmount": "killogram",
+      "numberOfOrders": 1,
+      "amountOfOrders": 1.0,
+      "profitOfOrders": 109.0,
+      "sellOfOrders": 112.0
+    }
+  ],
+  "nonAvailibaleGoodsList": [],
+  "billsList": [
+    {
+      "customerCod": 97,
+      "amount": 1.0,
+      "goodCod": 7577426209803362726,
+      "date": "May 8, 2021, 10:11:29 PM",
+      "id": 8648022397842665165,
+      "checked": true
+    }
+  ],
+  "historyOrder": {
+    "model.Bill@6e8dacdf": "May 8, 2021, 10:14:13 PM"
+  },
+  "tabel": {
+    "goods": []
+  },
+  "customers": [
+    {
+      "id": 3104,
+      "passworld": 2,
+      "bills": []
+    },
+    {
+      "id": 96432,
+      "passworld": 12,
+      "bills": []
+    },
+    {
+      "id": 3808,
+      "passworld": 2,
+      "bills": []
+    },
+    {
+      "id": 97,
+      "passworld": 1,
+      "bills": [
+        {
+          "customerCod": 97,
+          "amount": 1.0,
+          "goodCod": 7577426209803362726,
+          "date": "May 8, 2021, 10:11:29 PM",
+          "id": 8648022397842665165,
+          "checked": false
+        }
+      ]
+    },
+    {
+      "id": 97,
+      "passworld": 2,
+      "bills": []
+    }
+  ],
+  "curentCoustomerId": 97
+}

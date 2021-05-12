@@ -1,0 +1,124 @@
+{
+  "availibaleGoodsList": [
+    {
+      "name": "name",
+      "cod": 2926628971530111882,
+      "amount": 12089.0,
+      "buy": 11.0,
+      "sell": 12.0,
+      "kindOfAmount": "killogram",
+      "numberOfOrders": 2,
+      "amountOfOrders": 123.0,
+      "profitOfOrders": 123.0,
+      "sellOfOrders": 1476.0
+    },
+    {
+      "name": "nameq",
+      "cod": 249557559728383055,
+      "amount": 12212.0,
+      "buy": 11.0,
+      "sell": 12.0,
+      "kindOfAmount": "items",
+      "numberOfOrders": 0,
+      "amountOfOrders": 0.0,
+      "profitOfOrders": 0.0,
+      "sellOfOrders": 0.0
+    }
+  ],
+  "nonAvailibaleGoodsList": [
+    {
+      "name": "good",
+      "cod": 5769302487122737845,
+      "amount": 0.0,
+      "buy": 12.0,
+      "sell": 111.0,
+      "kindOfAmount": "killogram",
+      "numberOfOrders": 2,
+      "amountOfOrders": 12.0,
+      "profitOfOrders": 1188.0,
+      "sellOfOrders": 1332.0
+    }
+  ],
+  "billsList": [
+    {
+      "customerCod": 3104,
+      "amount": 11.0,
+      "goodCod": 5769302487122737845,
+      "date": "May 10, 2021, 2:28:39 PM",
+      "id": 5404268439172797939,
+      "checked": true
+    },
+    {
+      "customerCod": 3104,
+      "amount": 1.0,
+      "goodCod": 5769302487122737845,
+      "date": "May 10, 2021, 3:27:47 PM",
+      "id": 5961315120861820770,
+      "checked": true
+    },
+    {
+      "customerCod": 96367,
+      "amount": 1.0,
+      "goodCod": 2926628971530111882,
+      "date": "May 11, 2021, 1:05:18 AM",
+      "id": 6264628955460950022,
+      "checked": false
+    }
+  ],
+  "historyOrder": {
+    "5404268439172797939": "May 10, 2021, 2:29:08 PM",
+    "5961315120861820770": "May 11, 2021, 1:02:08 AM"
+  },
+  "tabel": {
+    "goods": []
+  },
+  "customers": [
+    {
+      "id": 3104,
+      "passworld": 1,
+      "bills": [
+        {
+          "customerCod": 3104,
+          "amount": 11.0,
+          "goodCod": 5769302487122737845,
+          "date": "May 10, 2021, 2:28:39 PM",
+          "id": 5404268439172797939,
+          "checked": false
+        },
+        {
+          "customerCod": 3104,
+          "amount": 1.0,
+          "goodCod": 5769302487122737845,
+          "date": "May 10, 2021, 3:27:47 PM",
+          "id": 5961315120861820770,
+          "checked": false
+        }
+      ]
+    },
+    {
+      "id": 3104,
+      "passworld": 2,
+      "bills": []
+    },
+    {
+      "id": 192271148,
+      "passworld": 22,
+      "bills": []
+    },
+    {
+      "id": 96367,
+      "passworld": 1,
+      "bills": [
+        {
+          "customerCod": 96367,
+          "amount": 1.0,
+          "goodCod": 2926628971530111882,
+          "date": "May 11, 2021, 1:05:18 AM",
+          "id": 6264628955460950022,
+          "checked": false
+        }
+      ]
+    }
+  ],
+  "curentCoustomerId": 96367
+}
