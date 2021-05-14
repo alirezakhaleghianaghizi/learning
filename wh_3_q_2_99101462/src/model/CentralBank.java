@@ -67,12 +67,12 @@ public class CentralBank {
         return -1;
     }
 
-    public int makingPassworld(){
+    public static int makingPassworld(){
         int maxPasworldNumber=9999;
         int minPasworldNumber=1000;
         return (int)Math.random()*(maxPasworldNumber-minPasworldNumber)+minPasworldNumber;
     }
-    public int makingCvv2(){
+    public static int makingCvv2(){
         int maxPasworldNumber=999;
         int minPasworldNumber=100;
         return (int)Math.random()*(maxPasworldNumber-minPasworldNumber)+minPasworldNumber;

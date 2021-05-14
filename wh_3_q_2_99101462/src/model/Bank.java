@@ -164,7 +164,9 @@ public class Bank {
             System.err.println("acountId is not true");
             return false;
         }
-        CurrentAcount newAcount=new CurrentAcount(person,this,acountId,initialAmount,new MyDate(),new BankCard());
+        CurrentAcount newAcount=new CurrentAcount(person,this,acountId,initialAmount,new MyDate(),null);
+        //Date of expiring becuse of My date class iss in complate
+        newAcount.setCreditCard(new BankCard(CentralBank.makingPassworld(),CentralBank.makingCvv2(),newAcount,newAcount.getOwnerOfAcount(),new MyDate(),new MyDate()));
         this.bankCurrentAcounts.add(newAcount);
         person.personCurrentAcount.add(newAcount);
         ArrayList<CurrentAcount> acounts=this.mapPersonsCurrentAcounts.get(person);

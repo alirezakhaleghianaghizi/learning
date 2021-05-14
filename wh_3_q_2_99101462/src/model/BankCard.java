@@ -6,10 +6,22 @@ public class BankCard {
     private int cvv2;
     private int secondPassworld;
     private CurrentAcount cardAcount;
-    private int ownerOfCard;
+    private Person ownerOfCard;
     private MyDate dateOfCreatingCard;
     private MyDate dateOfExpiringCard;
     private long money;
+
+    public BankCard(int passworld, int cvv2, CurrentAcount cardAcount, Person ownerOfCard, MyDate dateOfCreatingCard, MyDate dateOfExpiringCard) {
+        this.cardAcount = cardAcount;
+        this.cardNumber =this.cardAcount.getAcountNumber();
+        this.passworld = passworld;
+        this.cvv2 = cvv2;
+        this.ownerOfCard = ownerOfCard;
+        this.dateOfCreatingCard = dateOfCreatingCard;
+        this.dateOfExpiringCard = dateOfExpiringCard;
+        this.secondPassworld = 0;
+    }
+
     //To Do
     private boolean posibilityOfCashing;
     private boolean posibilytyOfPutting;
@@ -34,7 +46,7 @@ public class BankCard {
         return cardAcount;
     }
 
-    public int getOwnerOfCard() {
+    public Person getOwnerOfCard() {
         return ownerOfCard;
     }
 
@@ -70,7 +82,7 @@ public class BankCard {
         this.cardAcount = cardAcount;
     }
 
-    public void setOwnerOfCard(int ownerOfCard) {
+    public void setOwnerOfCard(Person ownerOfCard) {
         this.ownerOfCard = ownerOfCard;
     }
 
