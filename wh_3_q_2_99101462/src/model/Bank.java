@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class Bank {
    private String bankName;
    private int bankId;
-   public BigInteger bankProperty ;
+   public long bankProperty ;
    public int bankIntresetPercent;
    public int savingAcountIntrestPercentShortTime;
    public int savingAcountIntrestPercentLongTime;
@@ -21,7 +21,7 @@ public class Bank {
     public Bank(String bankName) {
         this.bankName = bankName;
         this.bankId=setbankId(bankName);
-        this.bankProperty= new BigInteger("3000000000");
+        this.bankProperty= 3_000_000_000L;
         this.bankIntresetPercent=20;
         this.savingAcountIntrestPercentLongTime=15;
         this.savingAcountIntrestPercentShortTime=10;
@@ -33,7 +33,7 @@ public class Bank {
         this.mapPersonsLoans=new HashMap<>();
     }
 
-    public Bank(String bankName,BigInteger initialMoney) {
+    public Bank(String bankName,long initialMoney) {
         this.bankName = bankName;
         this.bankId=setbankId(bankName);
         this.bankProperty= initialMoney;
@@ -71,7 +71,7 @@ public class Bank {
         this.bankId = bankId;
     }
 
-    public void setBankProperty(BigInteger bankProperty) {
+    public void setBankProperty(long bankProperty) {
         this.bankProperty = bankProperty;
     }
 
@@ -119,7 +119,7 @@ public class Bank {
         return bankId;
     }
 
-    public BigInteger getBankProperty() {
+    public long getBankProperty() {
         return bankProperty;
     }
 
@@ -165,14 +165,14 @@ public class Bank {
             return false;
         }
         CurrentAcount newAcount=new CurrentAcount(person,this,acountId,initialAmount,new MyDate(),null);
-        //Date of expiring becuse of My date class iss in complate
-        newAcount.setCreditCard(new BankCard(CentralBank.makingPassworld(),CentralBank.makingCvv2(),newAcount,newAcount.getOwnerOfAcount(),new MyDate(),new MyDate()));
+        newAcount.setCreditCard(new BankCard(CentralBank.makingPassworld(),CentralBank.makingCvv2(),newAcount,newAcount.getOwnerOfAcount(),new MyDate(),new MyDate(newAcount.getDateOfOpening().getYear()+4,newAcount.getDateOfOpening().getMonth(),newAcount.getDateOfOpening().getDay())));
         this.bankCurrentAcounts.add(newAcount);
         person.personCurrentAcount.add(newAcount);
         ArrayList<CurrentAcount> acounts=this.mapPersonsCurrentAcounts.get(person);
         if(acounts==null) acounts=new ArrayList<>();
         acounts.add(newAcount);
         this.mapPersonsCurrentAcounts.put(person,acounts);
+        this.bankProperty+=initialAmount;
         return true;
     }
 
@@ -181,15 +181,18 @@ public class Bank {
             System.err.println("acountId is not true");
             return false;
         }
-        SavingAcount newAcount=new SavingAcount (person,this,acountId,initialAmount,new MyDate(),kindeOfTime,catcherOfIntrest);
+        SavingAcount newAcount=new SavingAcount (person,this,acountId,initialAmount,kindeOfTime,catcherOfIntrest);
         this.bankSavingAcounts.add(newAcount);
         person.personSavingAcount.add(newAcount);
         ArrayList<SavingAcount> acounts=this.mapPersonsSavingAcounts.get(person);
         if(acounts==null) acounts=new ArrayList<>();
         acounts.add(newAcount);
         this.mapPersonsSavingAcounts.put(person,acounts);
+        this.bankProperty+=initialAmount;
         return true;
     }
 
 
 }
+
+

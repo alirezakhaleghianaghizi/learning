@@ -9,12 +9,12 @@ public class SavingAcount {
     private String acountTimeKind;
     private CurrentAcount  acountOfGetingIntrest;
 
-    public SavingAcount(Person ownerOfAcount, Bank bank, long acountNumber, long money, MyDate dateOfOpening, String acountTimeKind, CurrentAcount acountOfGetingIntrest) {
+    public SavingAcount(Person ownerOfAcount, Bank bank, long acountNumber, long money,  String acountTimeKind, CurrentAcount acountOfGetingIntrest) {
         this.ownerOfAcount = ownerOfAcount;
         this.bank = bank;
         this.acountNumber = acountNumber;
         this.money = money;
-        this.dateOfOpening = dateOfOpening;
+        this.dateOfOpening = new MyDate();
         this.acountTimeKind = acountTimeKind;
         this.acountOfGetingIntrest = acountOfGetingIntrest;
     }

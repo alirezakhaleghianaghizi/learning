@@ -18,7 +18,7 @@ public class Person {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nationalCode = nationalCode;
-        this.birthDate = birthDate;
+        this.birthDate = new MyDate(birthDate.getYear(),birthDate.getMonth(),birthDate.getDay());
         this.personSavingAcount=new ArrayList<>();
         this.personBankCards=new ArrayList<>();
         this.personCurrentAcount=new ArrayList<>();
