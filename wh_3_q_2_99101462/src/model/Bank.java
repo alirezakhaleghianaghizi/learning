@@ -181,6 +181,17 @@ public class Bank {
             System.err.println("acountId is not true");
             return false;
         }
+        boolean isCurrentAcountExistInTheBank=false;
+        for (CurrentAcount bankCurrentAcount : this.bankCurrentAcounts) {
+            if(bankCurrentAcount.getAcountNumber()==catcherOfIntrest.getAcountNumber()){
+                isCurrentAcountExistInTheBank=true;
+                break;
+            }
+        }
+        if (!isCurrentAcountExistInTheBank){
+            System.err.println("you dont have a current account in this bank.");
+            return false;
+        }
         SavingAcount newAcount=new SavingAcount (person,this,acountId,initialAmount,kindeOfTime,catcherOfIntrest);
         this.bankSavingAcounts.add(newAcount);
         person.personSavingAcount.add(newAcount);

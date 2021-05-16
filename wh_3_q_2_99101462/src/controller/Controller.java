@@ -158,6 +158,7 @@ public class Controller {
         }
         for (Bank bank : this.centralBank.banks) {
             if(bank.getBankName().equalsIgnoreCase(bankName)){
+
                 if(bank.openningSavingAcount(acountOwner,initialAmount,this.centralBank.savingAcountId(bank),kindeOfTime,catcherIntrest)){
                     return true;
                 }
@@ -387,13 +388,15 @@ public class Controller {
                 for (CurrentAcount bankCurrentAcount : bank.bankCurrentAcounts) {
                     if(bankCurrentAcount.getAcountNumber()==accountId){
                         bankCurrentAcount.setMoney(bankCurrentAcount.getMoney()+money);
+                        bankCurrentAcount.creditCard.setMoney(bankCurrentAcount.creditCard.getMoney()+money);
+                        bankCurrentAcount.ownerOfAcount.setAcountsMoney(bankCurrentAcount.ownerOfAcount.getAcountsMoney()+money);
                         bank.bankProperty+=money;
                         System.out.println("deposited "+money+"money to "+accountId);
                         return true;
                     }
                 }
                 for (SavingAcount bankSavingAcount : bank.bankSavingAcounts) {
-                    if(bankSavingAcount.getAcountNumber()==accountId){
+                    if(bankSavingAcount.getAcountNumber()==accountId&&this.isExistSavingAcount(bankSavingAcount)){
                         bankSavingAcount.setMoney(bankSavingAcount.getMoney()+money);
                         bank.bankProperty+=money;
                         System.out.println("deposited "+money+"money to "+accountId);
@@ -405,6 +408,302 @@ public class Controller {
             }
         }
         System.err.println("there is no bank with that name");
+        return false;
+    }
+
+    public boolean withdrawMoneyFromAccount(long cardId,int  password,long amount){
+            if(amount >2000){
+                System.err.println("amount of needed money is more than atm effort  . pleas refer to bank fo mor than 2000 money");
+                return false;
+            }
+        for (CurrentAcount currentAcount : this.centralBank.allCurrentAcount) {
+            if(currentAcount.getAcountNumber()==cardId){
+                if(currentAcount.creditCard.withDraw(password,amount)){
+                    System.out.println(amount+"money withdraw from "+cardId);
+                    return true;
+                }
+                return false;
+            }
+        }
+        System.err.println("there is no card with that id");
+        return false;
+    }
+
+    public boolean withdrawMoneyFromAccount(String bankNum,long accountId,long nationalCode,long money){
+        Person accountOwner= this.isPersonExist(nationalCode);
+        if(accountOwner==null){
+            System.err.println("there is no person in people with that id");
+            return false;
+        }
+        SavingAcount currentSavingAcount=null;
+        for (SavingAcount savingAcount : accountOwner.personSavingAcount) {
+            if(savingAcount.getAcountNumber()==accountId&&this.isExistSavingAcount(savingAcount)){
+                currentSavingAcount=savingAcount;
+                break;
+            }
+        }
+        CurrentAcount currentCurrentAcount=null;
+        for (CurrentAcount currentAcount : accountOwner.personCurrentAcount) {
+            if(currentAcount.getAcountNumber()==accountId){
+                currentCurrentAcount=currentAcount;
+                break;
+            }
+        }
+        if(currentCurrentAcount==null&&currentSavingAcount==null){
+            System.err.println("that person has no account with that id");
+            return false;
+        }
+        if(currentCurrentAcount.getBank().getBankName().equalsIgnoreCase(bankNum)&&currentCurrentAcount!=null){
+             if(currentCurrentAcount.withdrawMoney(money,bankNum)){
+                System.out.println("you withdraw"+money+ "money from this"+accountId+"account");
+                return true;
+             }
+               return false;
+        }
+        if(currentSavingAcount.getBank().getBankName().equalsIgnoreCase(bankNum)&&currentSavingAcount!=null){
+                if(!this.isExistSavingAcount(currentSavingAcount)) {
+                    if (currentSavingAcount.withdrawMoney(money, bankNum)) {
+                        System.out.println("you withdraw" + money + "money from this" + accountId + "account");
+                        return true;
+                    }
+                }
+                return false;
+        }
+        System.out.println("withdraw finished");
+        return true;
+    }
+
+    public boolean isExistSavingAcount(SavingAcount currentAcount){
+        int timeOfExpierring;
+        if(currentAcount.getAcountTimeKind().equalsIgnoreCase("short")){
+            timeOfExpierring=1;
+        }
+        else timeOfExpierring=2;
+        if (currentAcount.getDateOfOpening().getYear()<MyDate.currentYear-timeOfExpierring){
+            System.err.println("account is expiered");
+            return false;
+        }
+        if (currentAcount.getDateOfOpening().getYear()==MyDate.currentYear-timeOfExpierring&&currentAcount.getDateOfOpening().getMonth()<MyDate.currentMonth){
+            System.err.println("account is expiered");
+            return false;
+        }
+        if (currentAcount.getDateOfOpening().getYear()==MyDate.currentYear-timeOfExpierring&&currentAcount.getDateOfOpening().getMonth()==MyDate.currentMonth&&currentAcount.getDateOfOpening().getDay()<MyDate.currentDay){
+            System.err.println("account is expiered");
+            return false;
+        }
+        return true;
+    }
+
+    public boolean withdrawMoneyForCompany(String bankNum,long accountId,String companyId,long money){
+        for (Company company : this.companys) {
+            if(company.getCompanyId().equalsIgnoreCase(companyId)){
+                return this.withdrawMoneyFromAccount(bankNum,accountId,company.getManager().getNationalCode(),money);
+            }
+        }
+        System.err.println("there is no company with that id");
+        return false;
+    }
+
+    public boolean getAccountBalance(long cardId,int password){
+        for (CurrentAcount currentAcount : this.centralBank.allCurrentAcount) {
+            if(currentAcount.getCreditCard().getCardNumber()==cardId){
+                if(currentAcount.getCreditCard().getPassworld()==password){
+                    if(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()<MyDate.currentYear||(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()==MyDate.currentYear&&currentAcount.getCreditCard().getDateOfExpiringCard().getMonth()<MyDate.currentMonth)||(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()==MyDate.currentYear&&currentAcount.getCreditCard().getDateOfExpiringCard().getMonth()==MyDate.currentMonth&&currentAcount.getCreditCard().getDateOfExpiringCard().getDay()<MyDate.currentDay)){
+                        System.err.println("your card is expired");
+                        return false;
+                    }
+                    System.out.println(cardId+"has "+currentAcount.getCreditCard().getMoney()+" money");
+                    return true;
+                }
+                System.err.println("password was wrong");
+                return false;
+            }
+        }
+        System.err.println("there is no card with that id");
+        return false;
+    }
+
+    public boolean transferMoneyFromecard(long cardNum,int password,long receiverCardNum,long money){
+        CurrentAcount acount=null;
+        CurrentAcount receive=null;
+        for (CurrentAcount currentAcount : this.centralBank.allCurrentAcount) {
+            if(currentAcount.creditCard.getCardNumber()==cardNum&&acount==null){
+                if(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()<MyDate.currentYear||(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()==MyDate.currentYear&&currentAcount.getCreditCard().getDateOfExpiringCard().getMonth()<MyDate.currentMonth)||(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()==MyDate.currentYear&&currentAcount.getCreditCard().getDateOfExpiringCard().getMonth()==MyDate.currentMonth&&currentAcount.getCreditCard().getDateOfExpiringCard().getDay()<MyDate.currentDay)){
+                    System.err.println("your card is expired");
+                    return false;
+                }
+                acount=currentAcount;
+            }
+            else if (currentAcount.creditCard.getCardNumber() == receiverCardNum&&receive==null) {
+                if(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()<MyDate.currentYear||(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()==MyDate.currentYear&&currentAcount.getCreditCard().getDateOfExpiringCard().getMonth()<MyDate.currentMonth)||(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()==MyDate.currentYear&&currentAcount.getCreditCard().getDateOfExpiringCard().getMonth()==MyDate.currentMonth&&currentAcount.getCreditCard().getDateOfExpiringCard().getDay()<MyDate.currentDay)){
+                    System.err.println("destination card is expired");
+                    return false;
+                }
+                receive=currentAcount;
+            }
+            }
+        if(acount==null){
+            System.err.println("there is no card with that id");
+            return false;
+        }
+        if(receive==null){
+            System.err.println("there is no receive card with that id");
+            return false;
+        }
+        if(password!=acount.creditCard.getPassworld()){
+            System.err.println("password is wrong");
+            return false;
+        }
+        if(money> acount.getMoney()){
+            System.err.println("your money is not enough for transferring");
+            return false;
+        }
+            acount.decreasingMoney(money);
+            receive.decreasingMoney(-money);
+        System.out.println(money+"money transfered from "+cardNum+" to "+receiverCardNum);
+        return true;
+        }
+
+    public boolean transferMoneyFromAcount(String bankName,long accountId,long nationalCod,long receiverAcountId,long amount){
+        for (CurrentAcount currentAcount : this.centralBank.allCurrentAcount) {
+            if(receiverAcountId==currentAcount.getAcountNumber()){
+                if(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()<MyDate.currentYear||(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()==MyDate.currentYear&&currentAcount.getCreditCard().getDateOfExpiringCard().getMonth()<MyDate.currentMonth)||(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()==MyDate.currentYear&&currentAcount.getCreditCard().getDateOfExpiringCard().getMonth()==MyDate.currentMonth&&currentAcount.getCreditCard().getDateOfExpiringCard().getDay()<MyDate.currentDay)){
+                    System.err.println("your card is expired");
+                    return false;
+                }
+               return this.transferToCurrentAcount(bankName,accountId,nationalCod,currentAcount,amount);
+            }
+        }
+        for (SavingAcount savingAcount : this.centralBank.allSnavingAcount){
+            if(receiverAcountId==savingAcount.getAcountNumber()){
+                if(this.isExistSavingAcount(savingAcount)){
+                    System.err.println("the account is expiered");
+                    return false;
+                }
+                return this.transferToSavingAcount(bankName,accountId,nationalCod,savingAcount,amount);
+            }
+        }
+        System.err.println("there is no account with receiver accountId");
+        return false;
+    }
+
+    public Bank isBankExist(String bankName){
+        for (Bank bank : this.centralBank.banks) {
+            if(bank.getBankName().equalsIgnoreCase(bankName)) return bank;
+        }
+        System.err.println("there is no bank with that name");
+        return null;
+    }
+
+    public boolean transferToCurrentAcount(String bankName,long accountId,long nationalCod,CurrentAcount receive,long money){
+        if(this.isBankExist(bankName)==null){
+            return false;
+        }
+        if(this.isPersonExist(nationalCod)==null){
+            System.err.println("person with that id dose not exist");
+            return false;
+        }
+        boolean isacountBelongsBank=false;
+        for (CurrentAcount bankCurrentAcount : this.isBankExist(bankName).bankCurrentAcounts) {
+            if(bankCurrentAcount.getAcountNumber()==accountId) isacountBelongsBank=true;
+        }
+        for (SavingAcount bankSavingAcount : this.isBankExist(bankName).bankSavingAcounts) {
+            if(bankSavingAcount.getAcountNumber()==accountId) isacountBelongsBank=true;
+        }
+        if(!isacountBelongsBank){
+            System.err.println("the bank does not have the account");
+            return false;
+        }
+        for (CurrentAcount currentAcount : this.isPersonExist(nationalCod).personCurrentAcount) {
+            if(currentAcount.getAcountNumber()==accountId){
+                if(currentAcount.getMoney()<money){
+                    System.err.println("account money is not enough");
+                    return false;
+                }
+                currentAcount.decreasingMoney(money);
+                receive.decreasingMoney(-money);
+                System.out.println(money+"money transfered from "+currentAcount+" to "+receive);
+                return true;
+            }
+        }
+        for (SavingAcount savingAcount : this.isPersonExist(nationalCod).personSavingAcount) {
+            if(savingAcount.getAcountNumber()==accountId){
+                if(savingAcount.getMoney()<money){
+                    System.err.println("account money is not enough");
+                    return false;
+                }
+                if(this.isExistSavingAcount(savingAcount)){
+                    System.err.println("the account is expiered");
+                    return false;
+                }
+                savingAcount.decreasingMoney(money);
+                receive.decreasingMoney(-money);
+                System.out.println(money+"money transfered from "+savingAcount+" to "+receive);
+                return true;
+            }
+        }
+        System.err.println("person dose not have that account");
+        return false;
+    }
+
+    public boolean transferToSavingAcount(String bankName,long accountId,long nationalCod,SavingAcount receive, long money){
+        if(this.isBankExist(bankName)==null){
+            return false;
+        }
+        if(this.isPersonExist(nationalCod)==null){
+            System.err.println("person with that id dose not exist");
+            return false;
+        }
+        boolean isacountBelongsBank=false;
+        for (CurrentAcount bankCurrentAcount : this.isBankExist(bankName).bankCurrentAcounts) {
+            if(bankCurrentAcount.getAcountNumber()==accountId) isacountBelongsBank=true;
+        }
+        for (SavingAcount bankSavingAcount : this.isBankExist(bankName).bankSavingAcounts) {
+            if(bankSavingAcount.getAcountNumber()==accountId) isacountBelongsBank=true;
+        }
+        if(!isacountBelongsBank){
+            System.err.println("the bank does not have the account");
+            return false;
+        }
+        for (CurrentAcount currentAcount : this.isPersonExist(nationalCod).personCurrentAcount) {
+            if(currentAcount.getAcountNumber()==accountId){
+                if(currentAcount.getMoney()<money){
+                    System.err.println("account money is not enough");
+                    return false;
+                }
+                currentAcount.decreasingMoney(money);
+                receive.decreasingMoney(-money);
+                System.out.println(money+"money transfered from "+currentAcount+" to "+receive);
+                return true;
+            }
+        }
+        for (SavingAcount savingAcount : this.isPersonExist(nationalCod).personSavingAcount) {
+            if(savingAcount.getAcountNumber()==accountId){
+                if(savingAcount.getMoney()<money){
+                    System.err.println("account money is not enough");
+                    return false;
+                }
+                if(this.isExistSavingAcount(savingAcount)){
+                    System.err.println("the account is expiered");
+                    return false;
+                }
+                savingAcount.decreasingMoney(money);
+                receive.decreasingMoney(-money);
+                System.out.println(money+"money transfered from "+savingAcount+" to "+receive);
+                return true;
+            }
+        }
+        System.err.println("person dose not have that account");
+        return false;
+    }
+
+    public boolean transferFromCompany(String bankName,long accountId,String companyId,long receiverAcountId,long amount){
+        for (Company company : this.companys) {
+            if(company.getCompanyId().equalsIgnoreCase(companyId)){
+                return this.transferMoneyFromAcount(bankName,accountId,company.getManager().getNationalCode(),receiverAcountId,amount);
+            }
+        }
+        System.err.println("there is mo company with that id .");
         return false;
     }
 

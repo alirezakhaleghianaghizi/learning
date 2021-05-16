@@ -1,12 +1,12 @@
 package model;
 
 public class CurrentAcount {
-    private Person ownerOfAcount;
-    private Bank bank;
+    public Person ownerOfAcount;
+    protected Bank bank;
     private long acountNumber;
     private long money;
     private MyDate dateOfOpening;
-    private BankCard creditCard;
+    public BankCard creditCard;
 
     public CurrentAcount(Person ownerOfAcount, Bank bank, long acountNumber, long money, MyDate dateOfOpening, BankCard creditCard) {
         this.ownerOfAcount = ownerOfAcount;
@@ -67,5 +67,26 @@ public class CurrentAcount {
 
     public void setCreditCard(BankCard creditCard) {
         this.creditCard = creditCard;
+    }
+
+    public boolean withdrawMoney(long money,String bankName){
+        if(money>this.money){
+            System.err.println("your money is not enough");
+            return false;
+        }
+        if(!this.bank.getBankName().equalsIgnoreCase(bankName)){
+            System.err.println("the acount is not belong to that bank.");
+            return false;
+        }
+        this.decreasingMoney(money);
+        return true;
+    }
+
+    public boolean decreasingMoney(long money){
+        this.money-=money;
+        this.creditCard.setMoney(this.creditCard.getMoney()-money);
+        this.bank.bankProperty-=money;
+        this.ownerOfAcount.setAcountsMoney(this.ownerOfAcount.getAcountsMoney()-money);
+        return true;
     }
 }

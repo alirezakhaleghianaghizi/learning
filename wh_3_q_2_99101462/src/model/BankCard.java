@@ -97,4 +97,24 @@ public class BankCard {
     public void setMoney(long money) {
         this.money = money;
     }
+
+    public boolean withDraw(int passworld,long money){
+        if (passworld!=this.passworld){
+            System.err.println("Wrong password");
+            return false;
+        }
+        if(this.money<money){
+            System.err.println("your money is not enough");
+            return false;
+        }
+        if(this.dateOfExpiringCard.getYear()<MyDate.currentYear||(this.dateOfExpiringCard.getYear()==MyDate.currentYear&&this.dateOfExpiringCard.getMonth()<MyDate.currentMonth)||(this.dateOfExpiringCard.getYear()==MyDate.currentYear&&this.dateOfExpiringCard.getMonth()==MyDate.currentMonth&&this.dateOfExpiringCard.getDay()<MyDate.currentDay)){
+            System.err.println("your card is expired");
+            return false;
+        }
+        this.cardAcount.setMoney(this.cardAcount.getMoney()-money);
+        this.cardAcount.bank.bankProperty-=money;
+        this.cardAcount.ownerOfAcount.setAcountsMoney(this.cardAcount.ownerOfAcount.getAcountsMoney()-money);
+        this.money-=money;
+        return false;
+    }
 }

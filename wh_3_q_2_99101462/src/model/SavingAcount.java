@@ -77,6 +77,24 @@ public class SavingAcount {
         this.acountOfGetingIntrest = acountOfGetingIntrest;
     }
 
+    public boolean withdrawMoney(long money,String bankName){
+        if(money>this.money){
+            System.err.println("your money is not enough");
+            return false;
+        }
+        if(!this.bank.getBankName().equalsIgnoreCase(bankName)){
+            System.err.println("the acount is not belong to that bank.");
+            return false;
+        }
+        this.decreasingMoney(money);
+        return false;
+    }
+    public boolean decreasingMoney(long money){
+        this.money-=money;
+        this.bank.bankProperty-=money;
+        this.ownerOfAcount.setAcountsMoney(this.ownerOfAcount.getAcountsMoney()-money);
+        return true;
+    }
     //To Do
     private boolean posibleityOfcashing;
 
