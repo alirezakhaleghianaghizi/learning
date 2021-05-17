@@ -870,7 +870,7 @@ public class Controller {
             this.goingForwardSavingAccount(bank,monthOfGettingPercent);
             this.goingForwardCardAccount(bank,monthOfGettingPercent);
             this.goingForwardLoan(bank,monthOfGettingPercent);
-
+            bank.bankProperty+=monthOfGettingPercent*bank.bankIntresetPercent;
         }
     }
 
