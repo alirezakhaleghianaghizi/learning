@@ -42,6 +42,7 @@ public class MyDate {
     public int getDay() {
         return day;
     }
+
     public static void goNextDay(){
         if(currentMonth <7&& currentMonth >=1&& currentDay ==31){
             currentMonth++;

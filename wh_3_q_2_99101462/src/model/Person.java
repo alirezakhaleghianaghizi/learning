@@ -13,7 +13,7 @@ public class Person {
     private long deliverdLoansAmount;
     private int  numberOfdeliveringLoan;
     private long acountsMoney;
-
+    public boolean isBlock;
     public Person(String firstName, String lastName, long nationalCode, MyDate birthDate) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -25,6 +25,7 @@ public class Person {
         this.deliverdLoansAmount=0;
         this.numberOfdeliveringLoan=0;
         this.acountsMoney=0;
+        this.isBlock=false;
     }
 
     public String getFirstName() {

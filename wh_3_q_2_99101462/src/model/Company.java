@@ -9,7 +9,7 @@ public class Company {
     private String companyName;
     private String companyId;
     public ArrayList<SavingAcount> companysSavingAcount;
-
+    public boolean isBlock;
 
 
     public ArrayList<CurrentAcount> companysCurrentAcount;
@@ -31,6 +31,7 @@ public class Company {
         this.companysSavingAcount=new ArrayList<>();
         this.deliverdLoansAmount=0;
         this.numberOfdeliveringLoan=0;
+        this.isBlock=false;
     }
 
     public void setManager(Person manager) {

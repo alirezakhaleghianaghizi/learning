@@ -10,7 +10,7 @@ public class BankCard {
     private MyDate dateOfCreatingCard;
     private MyDate dateOfExpiringCard;
     private long money;
-
+    public boolean isBlock;
     public BankCard(int passworld, int cvv2, CurrentAcount cardAcount, Person ownerOfCard, MyDate dateOfCreatingCard, MyDate dateOfExpiringCard) {
         this.cardAcount = cardAcount;
         this.cardNumber =this.cardAcount.getAcountNumber();
@@ -19,6 +19,7 @@ public class BankCard {
         this.ownerOfCard = ownerOfCard;
         this.dateOfCreatingCard = dateOfCreatingCard;
         this.dateOfExpiringCard = dateOfExpiringCard;
+        this.isBlock=false;
         this.secondPassworld = 0;
     }
 

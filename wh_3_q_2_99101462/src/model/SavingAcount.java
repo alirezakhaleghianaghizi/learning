@@ -8,7 +8,7 @@ public class SavingAcount {
     private MyDate dateOfOpening;
     private String acountTimeKind;
     private CurrentAcount  acountOfGetingIntrest;
-
+    public boolean isBlock;
     public SavingAcount(Person ownerOfAcount, Bank bank, long acountNumber, long money,  String acountTimeKind, CurrentAcount acountOfGetingIntrest) {
         this.ownerOfAcount = ownerOfAcount;
         this.bank = bank;
@@ -17,6 +17,7 @@ public class SavingAcount {
         this.dateOfOpening = new MyDate();
         this.acountTimeKind = acountTimeKind;
         this.acountOfGetingIntrest = acountOfGetingIntrest;
+        this.isBlock=false;
     }
 
     public Person getOwnerOfAcount() {

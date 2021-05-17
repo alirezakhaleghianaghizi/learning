@@ -707,10 +707,220 @@ public class Controller {
         return false;
     }
 
+    public boolean requsetLoan(String bankName,long nationalCod,long amount){
+        boolean isHeHasAccountInTheBank=false;
+        for (SavingAcount bankSavingAcount : this.isBankExist(bankName).bankSavingAcounts) {
+            if(bankSavingAcount.getOwnerOfAcount().getNationalCode()==nationalCod) isHeHasAccountInTheBank=true;
+        }
+        for (CurrentAcount bankSavingAcount : this.isBankExist(bankName).bankCurrentAcounts) {
+            if(bankSavingAcount.getOwnerOfAcount().getNationalCode()==nationalCod) isHeHasAccountInTheBank=true;
+        }
+        if(!isHeHasAccountInTheBank){
+            System.err.println("you dont have an Account in that bank");
+            return false;
+        }
+        if(isPersonExist(nationalCod).getAcountsMoney()*5<amount){
+            System.err.println("your money is not enough to get the loan");
+            return false;
+        }
+        if(this.isBankExist(bankName).bankProperty<amount){
+            System.err.println("bank has no enough money to pay");
+            return false;
+        }
+        if(this.isBankExist(bankName)==null){
+            System.err.println("there is no bank with that id");
+            return false;
+        }
+        if(this.isPersonExist(nationalCod)==null){
+            System.err.println("there is no person with that id");
+            return false;
+        }
+        if(this.isPersonExist(nationalCod).getBirthDate().getYear()+18<MyDate.currentYear){
+            System.err.println("your age is not requiered for grtting loan");
+            return false;
+        }
+        ArrayList<Loan> loans=new ArrayList<>();
+        if(this.centralBank.allBankMapPersonsLoans.get(this.isPersonExist(nationalCod))!=null){
+            for (Loan loan : this.centralBank.allBankMapPersonsLoans.get(this.isPersonExist(nationalCod))) {
+                if(loan.getLoanAmount()> loan.getRegivenAmount()){
+                    System.err.println("you already have an incomplete loan");
+                    return false;
+                }
+            }
+            this.isBankExist(bankName).decrreaseForLoan(this.isPersonExist(nationalCod),amount);
+            loans=this.centralBank.allBankMapPersonsLoans.get(this.isPersonExist(nationalCod));
+            loans.add(new Loan(this.isPersonExist(nationalCod),amount,this.isBankExist(bankName).bankIntresetPercent,2));
+            this.centralBank.allBankMapPersonsLoans.put(this.isPersonExist(nationalCod),this.centralBank.allBankMapPersonsLoans.get(this.isPersonExist(nationalCod)));
+        }
+        //
+        if(!this.isBankExist(bankName).receiveLoan(this.isPersonExist(nationalCod),amount,loans)) return false;
+        this.centralBank.allBankMapPersonsLoans.put(this.isPersonExist(nationalCod),loans);
+        return true;
+    }
+
+    public boolean requestCompany(String bankName,String companyId,long amount){
+        for (Company company : this.companys) {
+            if(company.getCompanyId().equalsIgnoreCase(companyId)){
+                return this.requsetLoan(bankName,company.getManager().getNationalCode(),amount);
+            }
+        }
+        System.err.println("there is no company with that id");
+        return false;
+    }
+
+    public boolean payLoan(String bankName,long nationalCod,long amount,boolean sout){
+        if(isBankExist(bankName)==null){
+            if(sout)System.err.println("there is no bank with that name");
+            return false;
+        }
+        if(isPersonExist(nationalCod)==null){
+            if(sout)System.err.println("there is no person with that name");
+            return false;
+        }
+        if(isPersonExist(nationalCod).getAcountsMoney()<amount){
+            if(sout)System.err.println("you dont have enough money");
+            return false;
+        }
+        if(isBankExist(bankName).mapPersonsLoans.get(isPersonExist(nationalCod))!=null){
+            for (Loan loan : isBankExist(bankName).mapPersonsLoans.get(isPersonExist(nationalCod))) {
+                if(loan.getLoanAmount()>loan.getRegivenAmount()){
+                    long notActualAmount=amount;
+                    return this.payForLoan(isPersonExist(nationalCod),notActualAmount,loan,bankName,nationalCod,sout);
+                    }
+                }
+            if(sout)System.err.println("the person has no oncomplete loan in that bank");
+            return false;
+            }
+
+        if(sout)System.err.println("the person has no loan in that bank");
+        return false;
+    }
+
+    public boolean payForLoan(Person person,long notActualAmount,Loan loan,String bankName,long nationalCod,boolean sout){
+        long amount=notActualAmount;
+        for (SavingAcount savingAcount : loan.getLoanCatcher().personSavingAcount) {
+        if(savingAcount.getMoney()>amount&&notActualAmount>0){
+            savingAcount.setMoney(savingAcount.getMoney()-amount);
+            isBankExist(bankName).bankProperty+=amount;
+            isPersonExist(nationalCod).setAcountsMoney(isPersonExist(nationalCod).getAcountsMoney()-amount);
+            if(sout)System.out.println("you paid "+amount+"of loan");
+            loan.monthlyPayment.put(new MyDate(),amount);
+            return true;
+        }
+        else if(notActualAmount>0) {
+            notActualAmount-=savingAcount.getMoney();
+            savingAcount.setMoney(0);
+            isBankExist(bankName).bankProperty+=amount;
+            isPersonExist(nationalCod).setAcountsMoney(isPersonExist(nationalCod).getAcountsMoney()-amount);
+        }
+        else if (notActualAmount == 0) {
+            if(sout)System.out.println("you paid "+amount+"of loan");
+            loan.monthlyPayment.put(new MyDate(),amount);
+            return true;
+        }
+
+    }
+    for (CurrentAcount currentAcount : loan.getLoanCatcher().personCurrentAcount) {
+        if(currentAcount.getMoney()>amount&&notActualAmount>0){
+            currentAcount.setMoney(currentAcount.getMoney()-amount);
+            isBankExist(bankName).bankProperty+=amount;
+            isPersonExist(nationalCod).setAcountsMoney(isPersonExist(nationalCod).getAcountsMoney()-amount);
+            if(sout)System.out.println("you paid "+amount+"of loan");
+            loan.monthlyPayment.put(new MyDate(),amount);
+            return true;
+        }
+        else if(notActualAmount>0) {
+            notActualAmount-=currentAcount.getMoney();
+            currentAcount.setMoney(0);
+            isBankExist(bankName).bankProperty+=amount;
+            isPersonExist(nationalCod).setAcountsMoney(isPersonExist(nationalCod).getAcountsMoney()-amount);
+        }
+        else if (notActualAmount == 0) {
+            if(sout) System.out.println("you paid "+amount+"of loan");
+            loan.monthlyPayment.put(new MyDate(),amount);
+            return true;
+        }
+
+    }
+    return true;
+    }
+
+    public boolean payLoanForCompany(String bankName,String companyId,long amount){
+        for (Company company : this.companys) {
+            if(company.getCompanyId().equalsIgnoreCase(companyId)){
+                return this.payLoan(bankName,company.getManager().getNationalCode(),amount,true);
+            }
+        }
+        System.err.println("there is no company with that id");
+        return false;
+    }
+
+    public void dateTimeForward(int firstYear,int firstMonth,int firstDay){
+        int yearsOfTraveling=MyDate.currentYear-firstYear;
+        int monthOfTraveling=MyDate.currentMonth-firstMonth;
+        int daysOfTraveling=MyDate.currentDay-firstDay;
+        this.goingForward( yearsOfTraveling, monthOfTraveling, daysOfTraveling);
+    }
+
+    public void goingForward(int yearsOfTraveling,int monthsOfTraveling,int daysOfTraveling){
+        for (Bank bank : this.centralBank.banks) {
+            int isDaysChanges=0;
+            if(MyDate.currentDay-isDaysChanges<bank.dateOfOpenning.getDay()) isDaysChanges++;
+            int monthOfGettingPercent=monthsOfTraveling+12*yearsOfTraveling+isDaysChanges;
+            this.goingForwardSavingAccount(bank,monthOfGettingPercent);
+            this.goingForwardCardAccount(bank,monthOfGettingPercent);
+            this.goingForwardLoan(bank,monthOfGettingPercent);
+
+        }
+    }
+
+    public void goingForwardSavingAccount(Bank bank,int monthOfGettingPercent){
+        for (SavingAcount bankSavingAcount : bank.bankSavingAcounts) {
+            if(bankSavingAcount.isBlock!=true&&bankSavingAcount.getAcountTimeKind().equalsIgnoreCase("short")&&(bankSavingAcount.getDateOfOpening().getYear()-MyDate.currentDay*12+bankSavingAcount.getDateOfOpening().getMonth())>6){
+                bankSavingAcount.getAcountOfGetingIntrest().setMoney(bankSavingAcount.getAcountOfGetingIntrest().getMoney()+bankSavingAcount.getMoney());
+                bankSavingAcount.setMoney(0);
+                bankSavingAcount.isBlock=true;
+            }
+            else if(bankSavingAcount.isBlock!=true&&bankSavingAcount.getAcountTimeKind().equalsIgnoreCase("long")&&(bankSavingAcount.getDateOfOpening().getYear()-MyDate.currentDay*12+bankSavingAcount.getDateOfOpening().getMonth())>12){
+                bankSavingAcount.getAcountOfGetingIntrest().setMoney(bankSavingAcount.getAcountOfGetingIntrest().getMoney()+bankSavingAcount.getMoney());
+                bankSavingAcount.setMoney(0);
+                bankSavingAcount.isBlock=true;
+            }
+            else if(bankSavingAcount.getAcountTimeKind().equalsIgnoreCase("short")){
+                bankSavingAcount.getAcountOfGetingIntrest().setMoney(bankSavingAcount.getAcountOfGetingIntrest().getMoney()+bank.savingAcountIntrestPercentShortTime*monthOfGettingPercent);
+                bankSavingAcount.getOwnerOfAcount().setAcountsMoney(bankSavingAcount.getOwnerOfAcount().getAcountsMoney()+bank.savingAcountIntrestPercentShortTime*monthOfGettingPercent);
+            }
+            else if(bankSavingAcount.getAcountTimeKind().equalsIgnoreCase("long")){
+                bankSavingAcount.getAcountOfGetingIntrest().setMoney(bankSavingAcount.getAcountOfGetingIntrest().getMoney()+bank.savingAcountIntrestPercentLongTime*monthOfGettingPercent);
+                bankSavingAcount.getOwnerOfAcount().setAcountsMoney(bankSavingAcount.getOwnerOfAcount().getAcountsMoney()+bank.savingAcountIntrestPercentLongTime*monthOfGettingPercent);
+            }
+        }
+    }
+
+    public void goingForwardCardAccount(Bank bank,int monthOfGettingPercent){
+        for (CurrentAcount acount : bank.bankCurrentAcounts) {
+            if(acount.getCreditCard().isBlock!=true&&(acount.getCreditCard().getDateOfCreatingCard().getYear()-MyDate.currentDay*12+acount.getCreditCard().getDateOfCreatingCard().getMonth())>4*12){
+                acount.getCreditCard().isBlock=true;
+            }
+        }
+    }
+
+    public void goingForwardLoan(Bank bank,int monthOfGettingPercent){
+        for (Loan loan : bank.getLoans()) {
+            for (int i = 0; i < monthOfGettingPercent; i++) {
+                if(loan.getLoanAmount()*0.025>loan.getLoanCatcher().getAcountsMoney()){
+                    loan.getLoanCatcher().isBlock=true;
+                }
+                else{
+                    this.payLoan(bank.getBankName(),loan.getLoanCatcher().getNationalCode(),(long) loan.getLoanAmount()*25/1000,false);
+                }
+            }
+        }
+    }
+
+
     //TODO
-    //public boolean withdrawMoneyFromAccount
-
-
+    //public boolean giving loans
     
 
 }

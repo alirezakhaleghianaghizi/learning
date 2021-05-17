@@ -16,8 +16,9 @@ public class Bank {
     public HashMap<Person,ArrayList<SavingAcount>> mapPersonsSavingAcounts;
     public HashMap<Person,ArrayList<CurrentAcount>> mapPersonsCurrentAcounts;
     private ArrayList<Loan> loans;
-    private HashMap<Person,ArrayList<Loan>> mapPersonsLoans;
-
+    public HashMap<Person,ArrayList<Loan>> mapPersonsLoans;
+    public boolean isBlock;
+    public MyDate dateOfOpenning;
     public Bank(String bankName) {
         this.bankName = bankName;
         this.bankId=setbankId(bankName);
@@ -31,6 +32,8 @@ public class Bank {
         this.mapPersonsSavingAcounts=new HashMap<>();
         this.loans=new ArrayList<>();
         this.mapPersonsLoans=new HashMap<>();
+        this.dateOfOpenning=new MyDate();
+        this.isBlock=false;
     }
 
     public Bank(String bankName,long initialMoney) {
@@ -203,7 +206,33 @@ public class Bank {
         return true;
     }
 
+    public boolean receiveLoan(Person getterLoan,long amount,ArrayList<Loan> loans){
+        this.decrreaseForLoan(getterLoan,amount);
+        loans.add(new Loan(getterLoan,amount,this.bankIntresetPercent,2));
 
+        System.out.println("your loan amount is"+amount+"from "+bankName);
+        return false;
+
+    }
+
+    public void decrreaseForLoan(Person getterLoan,long amount){
+        getterLoan.setAcountsMoney(getterLoan.getAcountsMoney()+amount);
+        getterLoan.setDeliverdLoansAmount(getterLoan.getDeliverdLoansAmount()+amount);
+        getterLoan.setNumberOfdeliveringLoan(getterLoan.getNumberOfdeliveringLoan()+1);
+        for (SavingAcount savingAcount : getterLoan.personSavingAcount) {
+            if(savingAcount.getBank().getBankName().equalsIgnoreCase(this.bankName)){
+                savingAcount.setMoney(savingAcount.getMoney()+amount);
+                break;
+            }
+        }
+        for (CurrentAcount currentAcount : getterLoan.personCurrentAcount) {
+            if(currentAcount.getBank().getBankName().equalsIgnoreCase(this.bankName)){
+                currentAcount.setMoney(currentAcount.getMoney()+amount);
+                currentAcount.creditCard.setMoney(currentAcount.getMoney()+amount);
+                break;
+            }
+        }
+    }
 }
 
 
