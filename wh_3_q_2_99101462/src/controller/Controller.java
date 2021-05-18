@@ -6,9 +6,9 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 
 public class Controller {
-    CentralBank centralBank=new CentralBank();
-    ArrayList <Person> people =new ArrayList<>();
-    ArrayList <Company> companys =new ArrayList<>();
+    public CentralBank centralBank=new CentralBank();
+    public ArrayList <Person> people =new ArrayList<>();
+    public ArrayList <Company> companys =new ArrayList<>();
     //  NOT COMPLET ONES
     public void addPerson(String firstname,String lastname,long nationalCod, MyDate birthDate){
         this.people.add(new Person(firstname,lastname,nationalCod,birthDate));
@@ -19,7 +19,9 @@ public class Controller {
                 System.err.println("ther is no persone whit "+CEO_nationalCode+" cod in people.");
                 return false;
             }
-            this.companys.add(new Company(this.isPersonExist(CEO_nationalCode),companyName));
+            Company company=new Company(this.isPersonExist(CEO_nationalCode),companyName);
+            this.companys.add(company);
+            this.people.add(company.imagineryManager);
              System.out.println("the company made.");
              return true;
     }
@@ -35,26 +37,29 @@ public class Controller {
 
     public boolean addBank(String bankName){
         for (Bank bank : this.centralBank.banks) {
-            if (bank.getBankName().equalsIgnoreCase(bankName))
-                System.err.println("Ther is already a bank with this name .");
+            if (bank.getBankName().equalsIgnoreCase(bankName)&&bank!=null){
+                System.err.println("There is already"+ bankName+" with this name .");
                 return false;
+            }
         }
         Bank newBank=new Bank(bankName);
         this.centralBank.banks.add(newBank);
         if (new Bank(bankName).getBankId()==0){
             this.centralBank.banks.remove(newBank);
-            System.err.println("you cant open bank in that name");
+            System.err.println("you cant open bank with this"+ bankName);
             return false;
         }
-        System.out.println("the bank created.");
+        System.out.println("the "+bankName+" bank created.");
         return true;
     }
 
     public boolean addBankWithInitial(String bankName, long initialMoney){
         for (Bank bank : this.centralBank.banks) {
-            if (bank.getBankName().equalsIgnoreCase(bankName))
+            if (bank.getBankName().equalsIgnoreCase(bankName)){
                 System.err.println("Ther is already a bank with this name .");
-            return false;
+                return false;
+            }
+
         }
         Bank newBank=new Bank(bankName,initialMoney);
         this.centralBank.banks.add(newBank);
@@ -132,7 +137,7 @@ public class Controller {
         return false;
     }
 
-    public boolean openingSavingAcount(String bankName,long nationalCod,long initialAmount,String kindeOfTime,CurrentAcount catcherIntrest){
+    public boolean openingSavingAcount(String bankName,long nationalCod,long initialAmount,String kindeOfTime){
         boolean isNationalCodExist=false;
         if(kindeOfTime.equalsIgnoreCase("short")){
             if(initialAmount<5000){
@@ -159,7 +164,7 @@ public class Controller {
         for (Bank bank : this.centralBank.banks) {
             if(bank.getBankName().equalsIgnoreCase(bankName)){
 
-                if(bank.openningSavingAcount(acountOwner,initialAmount,this.centralBank.savingAcountId(bank),kindeOfTime,catcherIntrest)){
+                if(bank.openningSavingAcount(acountOwner,initialAmount,this.centralBank.savingAcountId(bank),kindeOfTime)){
                     return true;
                 }
             }
@@ -313,10 +318,10 @@ public class Controller {
         return false;
     }
 
-    public boolean openingCompanysSavingAcount(String bankName, String companyCod, long initialAmount, String kindeOfTime, CurrentAcount catcherIntrest){
+    public boolean openingCompanysSavingAcount(String bankName, String companyCod, long initialAmount, String kindeOfTime){
         for (Company company : this.companys) {
             if(company.getCompanyId().equalsIgnoreCase(companyCod)){
-               return this.openingSavingAcount(bankName,company.getManager().getNationalCode(),initialAmount,kindeOfTime,catcherIntrest);
+               return this.openingSavingAcount(bankName,company.imagineryManager.getNationalCode(),initialAmount,kindeOfTime);
             }
         }
         System.err.println("there is no company with that id");
@@ -336,7 +341,7 @@ public class Controller {
     public boolean closingCompanyAccount(String bankName, String companyCod, long accountNum){
        for (Company company : this.companys) {
            if(company.getCompanyId().equalsIgnoreCase(companyCod)){
-               return  this.cloasingAcount(bankName,company.getManager().getNationalCode(), accountNum);
+               return  this.cloasingAcount(bankName,company.imagineryManager.getNationalCode(), accountNum);
                }
        }
        System.err.println("there is no company with that id");
@@ -375,7 +380,7 @@ public class Controller {
     public boolean extendCompanyCardExpirationDate(String bankName,long cardNum,String companyId){
         for (Company company : this.companys) {
             if(company.getCompanyId().equalsIgnoreCase(companyId)){
-                return this.extendCardExpirationDate(bankName,cardNum,company.getManager().getNationalCode());
+                return this.extendCardExpirationDate(bankName,cardNum,company.imagineryManager.getNationalCode());
             }
         }
         System.err.println("there is no company with that id");
@@ -497,7 +502,7 @@ public class Controller {
     public boolean withdrawMoneyForCompany(String bankNum,long accountId,String companyId,long money){
         for (Company company : this.companys) {
             if(company.getCompanyId().equalsIgnoreCase(companyId)){
-                return this.withdrawMoneyFromAccount(bankNum,accountId,company.getManager().getNationalCode(),money);
+                return this.withdrawMoneyFromAccount(bankNum,accountId,company.imagineryManager.getNationalCode(),money);
             }
         }
         System.err.println("there is no company with that id");
@@ -526,6 +531,10 @@ public class Controller {
     public boolean transferMoneyFromecard(long cardNum,int password,long receiverCardNum,long money){
         CurrentAcount acount=null;
         CurrentAcount receive=null;
+        if(money>5000){
+            System.err.println("for money mor than 5000 refer to bank");
+            return false;
+        }
         for (CurrentAcount currentAcount : this.centralBank.allCurrentAcount) {
             if(currentAcount.creditCard.getCardNumber()==cardNum&&acount==null){
                 if(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()<MyDate.currentYear||(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()==MyDate.currentYear&&currentAcount.getCreditCard().getDateOfExpiringCard().getMonth()<MyDate.currentMonth)||(currentAcount.getCreditCard().getDateOfExpiringCard().getYear()==MyDate.currentYear&&currentAcount.getCreditCard().getDateOfExpiringCard().getMonth()==MyDate.currentMonth&&currentAcount.getCreditCard().getDateOfExpiringCard().getDay()<MyDate.currentDay)){
@@ -700,7 +709,7 @@ public class Controller {
     public boolean transferFromCompany(String bankName,long accountId,String companyId,long receiverAcountId,long amount){
         for (Company company : this.companys) {
             if(company.getCompanyId().equalsIgnoreCase(companyId)){
-                return this.transferMoneyFromAcount(bankName,accountId,company.getManager().getNationalCode(),receiverAcountId,amount);
+                return this.transferMoneyFromAcount(bankName,accountId,company.imagineryManager.getNationalCode(),receiverAcountId,amount);
             }
         }
         System.err.println("there is mo company with that id .");
@@ -761,7 +770,7 @@ public class Controller {
     public boolean requestCompany(String bankName,String companyId,long amount){
         for (Company company : this.companys) {
             if(company.getCompanyId().equalsIgnoreCase(companyId)){
-                return this.requsetLoan(bankName,company.getManager().getNationalCode(),amount);
+                return this.requsetLoan(bankName,company.imagineryManager.getNationalCode(),amount);
             }
         }
         System.err.println("there is no company with that id");
@@ -848,7 +857,7 @@ public class Controller {
     public boolean payLoanForCompany(String bankName,String companyId,long amount){
         for (Company company : this.companys) {
             if(company.getCompanyId().equalsIgnoreCase(companyId)){
-                return this.payLoan(bankName,company.getManager().getNationalCode(),amount,true);
+                return this.payLoan(bankName,company.imagineryManager.getNationalCode(),amount,true);
             }
         }
         System.err.println("there is no company with that id");
@@ -859,13 +868,36 @@ public class Controller {
         int yearsOfTraveling=MyDate.currentYear-firstYear;
         int monthOfTraveling=MyDate.currentMonth-firstMonth;
         int daysOfTraveling=MyDate.currentDay-firstDay;
+        if(MyDate.currentDay<firstDay) {
+            if(firstMonth <7&& firstMonth >=1){
+                if(monthOfTraveling<0)monthOfTraveling++;
+                else monthOfTraveling--;
+                daysOfTraveling +=31;
+            }
+            else if(firstMonth <12&& firstMonth >=7&& firstDay ==30){
+                if(monthOfTraveling<0)monthOfTraveling++;
+                else monthOfTraveling--;
+                daysOfTraveling +=30;
+            }
+            else if(firstMonth ==12&& firstDay ==30&&(firstYear -1399)%4==0){
+                if(monthOfTraveling<0)monthOfTraveling++;
+                else monthOfTraveling--;
+                daysOfTraveling +=30;
+            }
+            else if(firstMonth ==12&& firstDay ==290&&(firstYear -1399)%4!=0){
+                if(monthOfTraveling<0)monthOfTraveling++;
+                else monthOfTraveling--;
+                daysOfTraveling +=329;
+            }
+        }
+
         this.goingForward( yearsOfTraveling, monthOfTraveling, daysOfTraveling);
     }
 
     public void goingForward(int yearsOfTraveling,int monthsOfTraveling,int daysOfTraveling){
         for (Bank bank : this.centralBank.banks) {
             int isDaysChanges=0;
-            if(MyDate.currentDay-isDaysChanges<bank.dateOfOpenning.getDay()) isDaysChanges++;
+            if(MyDate.currentDay-daysOfTraveling<bank.dateOfOpenning.getDay()&&MyDate.currentDay>bank.dateOfOpenning.getDay()) isDaysChanges++;
             int monthOfGettingPercent=monthsOfTraveling+12*yearsOfTraveling+isDaysChanges;
             this.goingForwardSavingAccount(bank,monthOfGettingPercent);
             this.goingForwardCardAccount(bank,monthOfGettingPercent);

@@ -179,21 +179,31 @@ public class Bank {
         return true;
     }
 
-    public boolean openningSavingAcount(Person person,long initialAmount, long acountId,String kindeOfTime,CurrentAcount catcherOfIntrest){
+    public boolean openningSavingAcount(Person person,long initialAmount, long acountId,String kindeOfTime){
         if(acountId==-1) {
             System.err.println("acountId is not true");
             return false;
         }
         boolean isCurrentAcountExistInTheBank=false;
+        CurrentAcount catcherOfIntrest=null;
         for (CurrentAcount bankCurrentAcount : this.bankCurrentAcounts) {
-            if(bankCurrentAcount.getAcountNumber()==catcherOfIntrest.getAcountNumber()){
+            if(bankCurrentAcount.getOwnerOfAcount().getNationalCode()==person.getNationalCode()){
                 isCurrentAcountExistInTheBank=true;
+                catcherOfIntrest=bankCurrentAcount;
                 break;
             }
         }
-        if (!isCurrentAcountExistInTheBank){
+        if (!isCurrentAcountExistInTheBank||catcherOfIntrest==null){
             System.err.println("you dont have a current account in this bank.");
             return false;
+        }
+        for (Loan loan : this.loans) {
+            if(loan.getLoanCatcher().getNationalCode()==person.getNationalCode()){
+                if(loan.getLoanAmount()>loan.getRegivenAmount()){
+                    System.err.println("you have an un completed loan");
+                    return false;
+                }
+            }
         }
         SavingAcount newAcount=new SavingAcount (person,this,acountId,initialAmount,kindeOfTime,catcherOfIntrest);
         this.bankSavingAcounts.add(newAcount);

@@ -5,13 +5,12 @@ import java.util.HashMap;
 
 public class Company {
     private Person manager;
+    public Person imagineryManager;
     private MyDate companyFoundation;
     private String companyName;
     private String companyId;
     public ArrayList<SavingAcount> companysSavingAcount;
     public boolean isBlock;
-
-
     public ArrayList<CurrentAcount> companysCurrentAcount;
     private long deliverdLoansAmount;
     private int  numberOfdeliveringLoan;
@@ -32,6 +31,7 @@ public class Company {
         this.deliverdLoansAmount=0;
         this.numberOfdeliveringLoan=0;
         this.isBlock=false;
+        this.imagineryManager=new Person(this.manager.getFirstName(),this.manager.getLastName(),this.manager.getNationalCode()/10,this.manager.getBirthDate());
     }
 
     public void setManager(Person manager) {

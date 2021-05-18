@@ -14,7 +14,18 @@ public class CentralBank {
     public HashMap<Person,ArrayList<CurrentAcount>> allBanksMapPersonsCurrentAcount;
     public ArrayList<Loan> allLoans;
     public HashMap<Person,ArrayList<Loan>> allBankMapPersonsLoans;
-   //NOT COMPLET --> NEEDS ENUMS
+
+    public CentralBank() {
+        this.banks = new ArrayList<>();
+        this.allSnavingAcount = new ArrayList<>();
+        this.allCurrentAcount = new ArrayList<>();
+        this.allBanksMapPersonsSavingAcounts = new HashMap<>();
+        this.allBanksMapPersonsCurrentAcount = new HashMap<>();
+        this.allLoans = new ArrayList<>();
+        this.allBankMapPersonsLoans = new HashMap<>();
+    }
+
+    //NOT COMPLET --> NEEDS ENUMS
     public long makingId(){
         return rand.nextLong();
     }
