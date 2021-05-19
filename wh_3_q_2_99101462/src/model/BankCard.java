@@ -116,6 +116,6 @@ public class BankCard {
         this.cardAcount.bank.bankProperty-=money;
         this.cardAcount.ownerOfAcount.setAcountsMoney(this.cardAcount.ownerOfAcount.getAcountsMoney()-money);
         this.money-=money;
-        return false;
+        return true;
     }
 }

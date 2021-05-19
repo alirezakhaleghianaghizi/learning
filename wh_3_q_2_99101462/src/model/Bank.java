@@ -174,8 +174,10 @@ public class Bank {
         ArrayList<CurrentAcount> acounts=this.mapPersonsCurrentAcounts.get(person);
         if(acounts==null) acounts=new ArrayList<>();
         acounts.add(newAcount);
+        person.setAcountsMoney(person.getAcountsMoney()+initialAmount);
         this.mapPersonsCurrentAcounts.put(person,acounts);
         this.bankProperty+=initialAmount;
+        System.out.println("account created with id :"+acountId+" \t card password is :"+newAcount.creditCard.getPassworld());
         return true;
     }
 
@@ -213,6 +215,9 @@ public class Bank {
         acounts.add(newAcount);
         this.mapPersonsSavingAcounts.put(person,acounts);
         this.bankProperty+=initialAmount;
+
+        person.setAcountsMoney(person.getAcountsMoney()+initialAmount);
+        System.out.println("account created with id :"+acountId);
         return true;
     }
 
@@ -221,7 +226,7 @@ public class Bank {
         loans.add(new Loan(getterLoan,amount,this.bankIntresetPercent,2));
 
         System.out.println("your loan amount is"+amount+"from "+bankName);
-        return false;
+        return true;
 
     }
 

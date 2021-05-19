@@ -33,7 +33,7 @@ public enum Algorithm {
     TRANSFERPERSONTOCOMPANY("^(?i)\\s*transfer\\s+money\\s+to\\s+another\\s+account\\s+(\\w+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s*$"),
     RECEIVELOAN("^(?i)\\s*receive\\s+loan\\s+(\\w+)\\s+(\\d+)\\s+(\\d+)\\s*$"),
     RECEIVELOANCOMPANY("^(?i)\\s*receive\\s+loan\\s+(\\w+)\\s+(\\w+)\\s+(\\d+)\\s*$"),
-    PAYOFFLOAN("^(?i)\\s*pey\\s+off\\s+the\\s+loan\\s+(\\w+)\\s+(\\d+)\\s+(\\d+)\\s*$"),
+    PAYOFFLOAN("^(?i)\\s*pay\\s+off\\s+the\\s+loan\\s+(\\w+)\\s+(\\d+)\\s+(\\d+)\\s*$"),
     PAYOFFLOANCOMPANY("^(?i)\\s*pay\\s+off\\s+the\\s+loan\\s+(\\w+)\\s+(\\w+)\\s+(\\d+)\\s*$"),
     GONEXTDAY("^(?i)\\s*go\\s+next\\s+day\\s*$"),
     GONEXTMONTH("^(?i)\\s*go\\s+next\\s+month\\s*$"),
@@ -55,6 +55,8 @@ public enum Algorithm {
     SHOWDATE("^(?i)\\s*show\\s+date\\s*$"),
     SHOWCENTRALBANKBALANCE("^(?i)\\s*show\\s+central\\s+bank\\s+balance\\s*$"),
     SHOWBANKBALANCE("^(?i)\\s*show\\s+bank\\s+balance\\s+(\\w+)\\s*$"),        ;
+
+
     final Pattern inputPattern;
     Algorithm(String s) {
         this.inputPattern=Pattern.compile(s);
@@ -63,4 +65,6 @@ public enum Algorithm {
 
         return this.inputPattern.matcher(input);
     }
+
+
 }

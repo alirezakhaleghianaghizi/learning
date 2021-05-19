@@ -81,12 +81,12 @@ public class CentralBank {
     public static int makingPassworld(){
         int maxPasworldNumber=9999;
         int minPasworldNumber=1000;
-        return (int)Math.random()*(maxPasworldNumber-minPasworldNumber)+minPasworldNumber;
+        return (int)(Math.random()*(maxPasworldNumber-minPasworldNumber)+minPasworldNumber);
     }
     public static int makingCvv2(){
         int maxPasworldNumber=999;
         int minPasworldNumber=100;
-        return (int)Math.random()*(maxPasworldNumber-minPasworldNumber)+minPasworldNumber;
+        return (int)(Math.random()*(maxPasworldNumber-minPasworldNumber)+minPasworldNumber);
     }
     public boolean cardToCard( long situationAcuontId,long  destinationAcountId,long moneyOfTransfering,int passworld,int cvv2){
         int destinIndex=-1;

@@ -27,8 +27,7 @@ public class InputProcessor {
                     }
 
                 else if(( matcher = Algorithm.ADDPERSON.inputMatcher(input)).find()){
-                    this.controller.addPerson(matcher.group(1),matcher.group(2),Long.parseLong(matcher.group(3)),new MyDate(Integer.parseInt(matcher.group(4)),Integer.parseInt(matcher.group(5)),Integer.parseInt(matcher.group(6))));
-                    System.out.println("person added to people");
+                    this.controller.addPerson(matcher.group(1),matcher.group(2),Long.parseLong(matcher.group(3)),new MyDate(Integer.parseInt(matcher.group(6)),Integer.parseInt(matcher.group(5)),Integer.parseInt(matcher.group(4))));
                 }
 
                 else if(( matcher = Algorithm.ADDCOMPANY.inputMatcher(input)).find()){
@@ -74,14 +73,14 @@ public class InputProcessor {
                     if(this.isPersonBlocke(Long.parseLong(matcher.group(2)))){
                         System.err.println("the person is blocked becuse of not paying loans ");
                     }
-                    else this.controller.openingSavingAcount(matcher.group(1),Long.parseLong(matcher.group(2)),Long.parseLong(matcher.group(3)),matcher.group(4));
+                    else this.controller.openingSavingAcount(matcher.group(1),Long.parseLong(matcher.group(2)),Long.parseLong(matcher.group(5)),matcher.group(3));
                 }
 
                 else if(( matcher = Algorithm.OPENSAVINGACCOUNTCOMPANY.inputMatcher(input)).find()){
                     if(this.isCompanyBlocke(matcher.group(2))){
                         System.err.println("the company is blocked becuse of not paying loans ");
                     }
-                    else this.controller.openingCompanysSavingAcount(matcher.group(1),matcher.group(2),Long.parseLong(matcher.group(3)),matcher.group(4));
+                    else this.controller.openingCompanysSavingAcount(matcher.group(1),matcher.group(2),Long.parseLong(matcher.group(5)),matcher.group(3));
                 }
 
                 else if(( matcher = Algorithm.CLOSEACCOUNT.inputMatcher(input)).find()){
@@ -195,6 +194,20 @@ public class InputProcessor {
                     else this.controller.transferMoneyFromecard(Long.parseLong(matcher.group(1)),Integer.parseInt(matcher.group(2)),Long.parseLong(matcher.group(3)),Long.parseLong(matcher.group(4)));
                 }
 
+                else if(( matcher = Algorithm.TRANSFERPERSONTOCOMPANY.inputMatcher(input)).find()){
+
+                    if(this.isSavingAcountBlocke(Long.parseLong(matcher.group(2)))){
+                        System.err.println("the account is blocked ");
+                    }
+                    else  if(this.isSavingAcountBlocke(Long.parseLong(matcher.group(4)))){
+                        System.err.println("the receiver account is blocked ");
+                    }
+                    else if(this.isPersonBlocke(Long.parseLong(matcher.group(2)))){
+                        System.err.println("the person is blocked ");
+                    }
+                    else this.controller.transferMoneyFromAcount(matcher.group(1),Long.parseLong(matcher.group(2)),Long.parseLong(matcher.group(3)),Long.parseLong(matcher.group(4)),Long.parseLong(matcher.group(5)));
+                }
+
                 else if(( matcher = Algorithm.TRANSFERCOMPANYTOPERSON.inputMatcher(input)).find()){
 
                     if(this.isSavingAcountBlocke(Long.parseLong(matcher.group(2)))){
@@ -207,20 +220,6 @@ public class InputProcessor {
                         System.err.println("the receiver account is blocked ");
                     }
                     else this.controller.transferFromCompany(matcher.group(1),Long.parseLong(matcher.group(2)),matcher.group(3),Long.parseLong(matcher.group(4)),Long.parseLong(matcher.group(5)));
-                }
-
-                else if(( matcher = Algorithm.TRANSFERPERSONTOCOMPANY.inputMatcher(input)).find()){
-
-                    if(this.isSavingAcountBlocke(Long.parseLong(matcher.group(2)))){
-                        System.err.println("the account is blocked ");
-                    }
-                    else  if(this.isSavingAcountBlocke(Long.parseLong(matcher.group(4)))){
-                        System.err.println("the receiver account is blocked ");
-                    }
-                    else if(this.isPersonBlocke(Long.parseLong(matcher.group(1)))){
-                        System.err.println("the person is blocked ");
-                    }
-                    else this.controller.transferMoneyFromAcount(matcher.group(1),Long.parseLong(matcher.group(2)),Long.parseLong(matcher.group(3)),Long.parseLong(matcher.group(4)),Long.parseLong(matcher.group(5)));
                 }
 
                 else if(( matcher = Algorithm.RECEIVELOAN.inputMatcher(input)).find()){
@@ -364,11 +363,12 @@ public class InputProcessor {
                 }
 
                 else if(( matcher = Algorithm.SHOWALLLOANS.inputMatcher(input)).find()){
-                    for (Bank bank : this.controller.centralBank.banks) {
-                        for (Loan loan : bank.getLoans()) {
+                    for (Person person : this.controller.people) {
+                        for (Loan loan : this.controller.centralBank.allBankMapPersonsLoans.get(person)) {
                             this.showDwtailLoan(loan);
                         }
                     }
+
                 }
 
                 else if(( matcher = Algorithm.SHOWACCOUNTSFORPERSON.inputMatcher(input)).find()){
@@ -386,7 +386,7 @@ public class InputProcessor {
                             System.out.println("saving account id is"+savingAcount.getAcountNumber());
                         }
                         for (CurrentAcount currentAcount : person.personCurrentAcount) {
-                            System.out.println("saving account id is"+currentAcount.getAcountNumber());
+                            System.out.println("current account id is"+currentAcount.getAcountNumber());
                         }
                     }
                 }
@@ -422,13 +422,14 @@ public class InputProcessor {
                         System.err.println("person is blocked");
                     }
                     else{
-                        for (Bank bank : this.controller.centralBank.banks) {
-                            for (Loan loan : bank.getLoans()) {
+                        for (Loan loan : this.controller.centralBank.allBankMapPersonsLoans.get(person)) {
+
                                 if(person.getNationalCode()==loan.getLoanCatcher().getNationalCode()){
                                     showDwtailLoan(loan);
                                 }
-                            }
+
                         }
+
                     }
                 }
 
@@ -459,7 +460,7 @@ public class InputProcessor {
                     }
                     else {
                         for (Bank bank : this.controller.centralBank.banks) {
-                            if(bank.getBankName().equalsIgnoreCase(matcher.group(1))) System.out.println("bank saving Acount Intrest Percent FOR Long Time"+bank.savingAcountIntrestPercentLongTime+"\n  AND bank saving Acount Intrest Percent FOR Long short"+bank.savingAcountIntrestPercentShortTime);
+                            if(bank.getBankName().equalsIgnoreCase(matcher.group(1))) System.out.println("bank saving Acount Intrest Percent FOR Long Time"+bank.savingAcountIntrestPercentLongTime+"\n  AND bank saving Acount Intrest Percent FOR Long time "+bank.savingAcountIntrestPercentShortTime);
                         }
                     }
                 }
