@@ -25,7 +25,7 @@ public class Person {
         this.deliverdLoansAmount=0;
         this.numberOfdeliveringLoan=0;
         this.acountsMoney=0;
-        this.isBlock=false;
+
     }
 
     public String getFirstName() {

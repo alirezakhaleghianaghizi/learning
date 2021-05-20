@@ -6,9 +6,16 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 
 public class Controller {
-    public CentralBank centralBank=new CentralBank();
-    public ArrayList <Person> people =new ArrayList<>();
-    public ArrayList <Company> companys =new ArrayList<>();
+    public CentralBank centralBank;
+    public ArrayList <Person> people ;
+    public ArrayList <Company> companys ;
+
+    public Controller() {
+        this.centralBank =new CentralBank();
+        this.people =new ArrayList<>();
+        this.companys =new ArrayList<>();
+    }
+
     //  NOT COMPLET ONES
     public void addPerson(String firstname,String lastname,long nationalCod, MyDate birthDate){
         if(isPersonExist(nationalCod)==null){
@@ -57,7 +64,7 @@ public class Controller {
         this.centralBank.banks.add(newBank);
         if (new Bank(bankName).getBankId()==0){
             this.centralBank.banks.remove(newBank);
-            System.err.println("you cant open bank with this"+ bankName);
+            System.err.println("you cant open bank with this "+ bankName);
             return false;
         }
         System.out.println("the "+bankName+" bank created.");
@@ -65,22 +72,11 @@ public class Controller {
     }
 
     public boolean addBankWithInitial(String bankName, long initialMoney){
-        for (Bank bank : this.centralBank.banks) {
-            if (bank.getBankName().equalsIgnoreCase(bankName)){
-                System.err.println("Ther is already a bank with this name .");
-                return false;
-            }
-
+        if(this.addBank(bankName)){
+            this.isBankExist(bankName).setBankProperty(initialMoney);
+            return true;
         }
-        Bank newBank=new Bank(bankName,initialMoney);
-        this.centralBank.banks.add(newBank);
-        if (new Bank(bankName).getBankId()==0){
-            this.centralBank.banks.remove(newBank);
-            System.err.println("you cant open bank in that name");
-            return false;
-        }
-        System.out.println("the bank created.");
-        return true;
+        return false;
     }
 
     public boolean setBankIncomePercent(String bankName,int incomePercent){
@@ -91,11 +87,11 @@ public class Controller {
                 return true;
             }
         }
-        System.err.println("ther is no bank with that name");
+        System.err.println("there is no bank with that name");
         return false;
     }
 
-    public boolean setBankAcountIntrest(String bankName,int percent,String acountTypeOfTime){
+    public boolean setBankAccountIntrest(String bankName, int percent, String acountTypeOfTime){
         for (Bank bank : this.centralBank.banks) {
             if(bank.getBankName().equalsIgnoreCase(bankName)){
                 if(acountTypeOfTime.equalsIgnoreCase("short")){
@@ -106,11 +102,11 @@ public class Controller {
                     bank.setSavingAcountIntrestPercentLongTime(percent);
                     return true;
                 }
-                System.err.println("type of acountTime was wrong.");
+                System.err.println("type of account Time was wrong.");
                 return false;
             }
         }
-        System.err.println("ther is no bank with that name.");
+        System.err.println("there is no bank with that name.");
         return false;
     }
 
@@ -126,10 +122,8 @@ public class Controller {
     }
 
     public boolean openingCurentAcount(String bankName,long nationalCod,long initialAmount){
-        boolean[] isNationalCodExist=new boolean[1];
-        isNationalCodExist[0]=false;
-        boolean[] ageRequired=new boolean[1];
-         ageRequired[0]=false;
+        boolean isNationalCodExist[]={false};
+        boolean ageRequired[]={false};
        Person acountOwner=this.acountOwner(isNationalCodExist,nationalCod,ageRequired);
         if(!isNationalCodExist[0]&&acountOwner==null) {
             System.err.println("the nationalCode belongs to no one.");
@@ -144,6 +138,7 @@ public class Controller {
             if(bank.getBankName().equalsIgnoreCase(bankName)){
                 if(bank.openningCurrentAcount(acountOwner,initialAmount,this.centralBank.currentAcountId(bank))){
                     this.centralBank.allCurrentAcount.add(bank.bankCurrentAcounts.get(bank.bankCurrentAcounts.size()-1));
+                    this.centralBank.allBanksMapPersonsCurrentAcount.put(acountOwner,acountOwner.personCurrentAcount);
                     return true;
                 }
                 return false;
@@ -154,10 +149,8 @@ public class Controller {
     }
 
     public boolean openingSavingAcount(String bankName,long nationalCod,long initialAmount,String kindeOfTime){
-        boolean[] isNationalCodExist=new boolean[1];
-        isNationalCodExist[0]=false;
-        boolean[] ageRequired=new boolean[1];
-        ageRequired[0]=false;
+        boolean isNationalCodExist[]={false};
+        boolean ageRequired[]={false};
         if(kindeOfTime.equalsIgnoreCase("short")){
             if(initialAmount<5000){
                 System.err.println("initial amount is not enough for short saving acount");
@@ -186,6 +179,7 @@ public class Controller {
 
                 if(bank.openningSavingAcount(acountOwner,initialAmount,this.centralBank.savingAcountId(bank),kindeOfTime)){
                     this.centralBank.allSnavingAcount.add(bank.bankSavingAcounts.get(bank.bankSavingAcounts.size()-1));
+                    this.centralBank.allBanksMapPersonsSavingAcounts.put(acountOwner,acountOwner.personSavingAcount);
                     return true;
                 }
             }
@@ -195,8 +189,7 @@ public class Controller {
     }
 
     public boolean cloasingAcount(String bankName,long nationalCod,long acuntNum){
-        boolean[] isNationalCodMach=new boolean[1];
-        isNationalCodMach[0]=false;
+        boolean isNationalCodMach[]={false};
         Person acountOwner=this.acountOwner(isNationalCodMach,nationalCod,acuntNum);
         if(!isNationalCodMach[0]){
             System.err.println("the "+nationalCod+" dose not have a accounts with "+acuntNum+" id.");
@@ -262,6 +255,7 @@ public class Controller {
                         bank.bankCurrentAcounts.remove(bankCurrentAcount);
                         this.centralBank.allCurrentAcount.remove(bankCurrentAcount);
                         this.centralBank.allBanksMapPersonsCurrentAcount.put(acountOwner,curentAcunt);
+                        bankCurrentAcount.getOwnerOfAcount().personCurrentAcount.remove(bankCurrentAcount);
                         System.out.println("account deleted");
                         return true;
                     }
@@ -274,6 +268,7 @@ public class Controller {
                         bank.bankSavingAcounts.remove(bankSavingAcount);
                         this.centralBank.allSnavingAcount.remove(bankSavingAcount);
                         this.centralBank.allBanksMapPersonsSavingAcounts.put(acountOwner,curentAcunt);
+                        bankSavingAcount.getOwnerOfAcount().personSavingAcount.remove(bankSavingAcount);
                         System.out.println("account deleted");
                         return true;
                     }
@@ -383,6 +378,10 @@ public class Controller {
                         if(cardNum==bankCurrentAcount.getAcountNumber()){
                             if(bankCurrentAcount.getOwnerOfAcount().getNationalCode()!=nationalCod){
                                 System.err.println("the owner of carde is not"+nationalCod);
+                                return false;
+                            }
+                            if(bankCurrentAcount.getCreditCard().getDateOfCreatingCard().getYear()!=MyDate.currentYear){
+                                System.err.println("card is not expiered yet");
                                 return false;
                             }
                             bankCurrentAcount.getCreditCard().setDateOfExpiringCard(new MyDate(MyDate.currentYear +4,MyDate.currentMonth,MyDate.currentDay));
@@ -775,7 +774,7 @@ public class Controller {
         ArrayList<Loan> loans=new ArrayList<>();
         if(this.centralBank.allBankMapPersonsLoans.get(this.isPersonExist(nationalCod))!=null){
             for (Loan loan : this.centralBank.allBankMapPersonsLoans.get(this.isPersonExist(nationalCod))) {
-                if(loan.getLoanAmount()> loan.getRegivenAmount()){
+                if(loan.getLoanAmount()*((loan.getInterestPercent()+100)/100)> loan.getRegivenAmount()){
                     System.err.println("you already have an incomplete loan");
                     return false;
                 }
@@ -783,10 +782,15 @@ public class Controller {
             this.isBankExist(bankName).decrreaseForLoan(this.isPersonExist(nationalCod),amount);
             loans=this.centralBank.allBankMapPersonsLoans.get(this.isPersonExist(nationalCod));
             loans.add(new Loan(this.isPersonExist(nationalCod),amount,this.isBankExist(bankName).bankIntresetPercent,2));
+            this.isBankExist(bankName).mapPersonsLoans.put(this.isPersonExist(nationalCod),loans);
+            this.isBankExist(bankName).loans.add(loans.get(loans.size()-1));
+            this.centralBank.allLoans.add(loans.get(loans.size()-1));
             this.centralBank.allBankMapPersonsLoans.put(this.isPersonExist(nationalCod),this.centralBank.allBankMapPersonsLoans.get(this.isPersonExist(nationalCod)));
         }
-        //
         if(!this.isBankExist(bankName).receiveLoan(this.isPersonExist(nationalCod),amount,loans)) return false;
+        this.isBankExist(bankName).mapPersonsLoans.put(this.isPersonExist(nationalCod),loans);
+        this.isBankExist(bankName).loans.add(loans.get(loans.size()-1));
+        this.centralBank.allLoans.add(loans.get(loans.size()-1));
         this.centralBank.allBankMapPersonsLoans.put(this.isPersonExist(nationalCod),loans);
         return true;
     }
@@ -816,7 +820,7 @@ public class Controller {
         }
         if(centralBank.allBankMapPersonsLoans.get(isPersonExist(nationalCod))!=null){
             for (Loan loan : centralBank.allBankMapPersonsLoans.get(isPersonExist(nationalCod))) {
-                if(loan.getLoanAmount()>loan.getRegivenAmount()){
+                if(loan.getLoanAmount()*(loan.getInterestPercent()+100)/100>loan.getRegivenAmount()){
                     long notActualAmount=amount;
                     return this.payForLoan(isPersonExist(nationalCod),notActualAmount,loan,bankName,nationalCod,sout);
                     }
@@ -831,8 +835,8 @@ public class Controller {
 
     public boolean payForLoan(Person person,long notActualAmount,Loan loan,String bankName,long nationalCod,boolean sout){
         long amount =notActualAmount;
-       if(loan.getLoanAmount()- loan.getRegivenAmount()<notActualAmount)
-         amount=loan.getLoanAmount()- loan.getRegivenAmount();
+       if(loan.getLoanAmount()*(loan.getInterestPercent()+100)/100- loan.getRegivenAmount()<notActualAmount)
+         amount=loan.getLoanAmount()*(loan.getInterestPercent()+100)/100- loan.getRegivenAmount();
         for (SavingAcount savingAcount : loan.getLoanCatcher().personSavingAcount) {
         if(savingAcount.getMoney()>amount&&notActualAmount>0){
             savingAcount.setMoney(savingAcount.getMoney()-amount);
@@ -974,6 +978,7 @@ public class Controller {
             for (int i = 0; i < monthOfGettingPercent; i++) {
                 if(loan.getLoanAmount()*0.025>loan.getLoanCatcher().getAcountsMoney()){
                     loan.getLoanCatcher().isBlock=true;
+                    loan.setInterestPercent(loan.getInterestPercent()+loan.getPenaltyPercent());
                 }
                 else{
                     this.payLoan(bank.getBankName(),loan.getLoanCatcher().getNationalCode(),(long) loan.getLoanAmount()*25/1000,false);
@@ -984,7 +989,6 @@ public class Controller {
 
 
     //TODO
-    //public boolean giving loans
     
 
 }

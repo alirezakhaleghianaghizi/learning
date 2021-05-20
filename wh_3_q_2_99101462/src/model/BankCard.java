@@ -23,10 +23,6 @@ public class BankCard {
         this.secondPassworld = 0;
     }
 
-    //To Do
-    private boolean posibilityOfCashing;
-    private boolean posibilytyOfPutting;
-
     public long getCardNumber() {
         return cardNumber;
     }

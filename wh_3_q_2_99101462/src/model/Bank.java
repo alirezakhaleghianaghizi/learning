@@ -15,7 +15,7 @@ public class Bank {
     public ArrayList<CurrentAcount> bankCurrentAcounts;
     public HashMap<Person,ArrayList<SavingAcount>> mapPersonsSavingAcounts;
     public HashMap<Person,ArrayList<CurrentAcount>> mapPersonsCurrentAcounts;
-    private ArrayList<Loan> loans;
+    public ArrayList<Loan> loans;
     public HashMap<Person,ArrayList<Loan>> mapPersonsLoans;
     public boolean isBlock;
     public MyDate dateOfOpenning;
@@ -35,29 +35,6 @@ public class Bank {
         this.dateOfOpenning=new MyDate();
         this.isBlock=false;
     }
-
-    public Bank(String bankName,long initialMoney) {
-        this.bankName = bankName;
-        this.bankId=setbankId(bankName);
-        this.bankProperty= initialMoney;
-        this.bankIntresetPercent=20;
-        this.savingAcountIntrestPercentLongTime=15;
-        this.savingAcountIntrestPercentShortTime=10;
-        this.bankSavingAcounts=new ArrayList<>();
-        this.bankCurrentAcounts=new ArrayList<>();
-        this.mapPersonsCurrentAcounts=new HashMap<>();
-        this.mapPersonsSavingAcounts=new HashMap<>();
-        this.loans=new ArrayList<>();
-        this.mapPersonsLoans=new HashMap<>();
-    }
-
-    /*public static void main(String[] args) {
-        String bankName ="meli";
-        for (BankIds value : BankIds.values()) {
-            if (value.toString().equalsIgnoreCase(bankName)) System.out.println( value.getId());
-        }
-
-    }*/
 
     public int setbankId(String bankName){
         for (BankIds value : BankIds.values()) {
@@ -226,6 +203,7 @@ public class Bank {
         loans.add(new Loan(getterLoan,amount,this.bankIntresetPercent,2));
 
         System.out.println("your loan amount is"+amount+"from "+bankName);
+        if (loans.size()<1) return false;
         return true;
 
     }
