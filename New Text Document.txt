@@ -1,0 +1,6 @@
+ this.manager.allLevels=this.manager.allLevels.FILE.reloadLevels(this.manager.allLevels);
+        while ((level=Integer.parseInt(scanner.nextLine()))=this.manager.personsController.getCurrentUser().level+2levelmanager.allLevels.numberOfLevels){
+            if(manager.allLevels.numberOfLevelslevel) System.err.println(PLEASE ENTER AN AVAILABLE LEVEL IN THE GAME. );
+
+            if(this.manager.personsController.getCurrentUser().level+2level) System.err.println(PLEAS ENTER THE LEVEL WITCH IS OPENED FOR YOU);
+        }

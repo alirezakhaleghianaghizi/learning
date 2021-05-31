@@ -31,11 +31,10 @@ public class FileOperating {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return 0;
     }
     public Controller readFile(String filename,Controller controller){
-        File file =new File("resource\\"+filename);
+        File file =new File("resource\\"+"goodlist.txt");
         String output="";
         try {
             Scanner scanner =new Scanner(file);
